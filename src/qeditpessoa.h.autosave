@@ -1,0 +1,28 @@
+#ifndef QEDITPESSOA_H
+#define QEDITPESSOA_H
+
+#include <QWidget>
+
+class qEditPessoa : public QDialog
+{
+    Q_OBJECT
+public:
+    explicit qEditPessoa(int ID = 0, QStringList *DATA = 0, QWidget *parent = 0);
+    
+    int aid;
+    int vara;
+    QComboBox *cbVara;
+    QLineEdit *line1;
+    QLineEdit *line2;
+    QLineEdit *line3;
+    QLineEdit *line4;
+    QLineEdit *line5;
+    QLineEdit *line6;
+
+signals:
+
+public slots:
+
+};
+
+#endif // QEDITPESSOA_H
