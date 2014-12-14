@@ -1,5 +1,1 @@
-<RCC>
-    <qresource prefix="/html">
-        <file alias="pauta">template/Pauta.html</file>
-    </qresource>
-</RCC>
+<RCC/>

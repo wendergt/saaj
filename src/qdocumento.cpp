@@ -9,13 +9,65 @@ void qDocumento::doPrint()
     qDebug() << f.size();
     QTextStream out(&f);
     out.setCodec("UTF-8");
-    out << html;
+//    out << html;
     //in.setString(&html,QIODevice::WriteOnly);
     f.close();
     QZipWriter zip(QDir::toNativeSeparators(QDir::home().path() + "/Documentos/DocumentoZIP.odt"));
-    zip.addDirectory(QDir::toNativeSeparators(gb.getPath() + "template"));
+//    zip.addDirectory(QDir::toNativeSeparators(gb.getPath() + "template"));
 //    qDebug() << QString("%1").arg(JlCompress::compressDir("C:/Users/GinaMarise/Documents/Saaj/Documento.odt",
 //                                                          gb.getPath() + "template"));
+
+
+
+    //QZipWriter zip(path + "/dir.zip");
+
+    //if (zip.status() != QZipWriter::NoError)
+
+    zip.setCompressionPolicy(QZipWriter::AutoCompress);
+
+    QDirIterator it(QDir::toNativeSeparators(gb.getPath() + "template"), QDir::Files|QDir::Dirs, QDirIterator::Subdirectories);
+
+
+
+    while(it.hasNext())
+    {
+    QString file_path = it.next();
+   // qDebug() << "isdir: " << it.fileInfo().isDir() << " isfile: " << it.fileInfo().isFile() <<
+   //             " - filapath do zip: " + file_path.remove(gb.getPath() + "template/");
+
+    QString tmp = file_path.at(file_path.count()-1);
+    bool aux = QString::compare(tmp, ".", Qt::CaseInsensitive) && QString::compare(tmp, "..", Qt::CaseInsensitive);
+    qDebug() << "*********   tmp: " << tmp << " aux: " << aux;
+
+
+    if (it.fileInfo().isDir() && aux)
+    {
+    zip.setCreationPermissions(QFile::permissions(file_path));
+    //int x = QString::compare(tmp, ".", Qt::CaseInsensitive);
+    zip.addDirectory(file_path.remove(gb.getPath() + "template"));
+    }
+    //else
+    if(it.fileInfo().isFile())
+    {
+    QFile file(file_path);
+
+    if (!file.open(QIODevice::ReadOnly))
+    continue;
+
+    zip.setCreationPermissions(QFile::permissions(file_path));
+    QByteArray ba = file.readAll();
+    zip.addFile(file_path.remove(gb.getPath() + "template/"), ba);
+
+    file.close();
+    }
+    }
+
+    zip.close();
+
+
+
+
+
 }
 
 void qDocumento::doPrintVis()
@@ -45,9 +97,6 @@ qDocumento::qDocumento(QString FileName, QWidget *parent) :
 
     QDir baseDir (QDir::toNativeSeparators(gb.getPath() + "template/"));
 
-
-    qDebug() << baseDir;
-
     qDebug() << "UnzipFile: " + gb.getPath() + FileName;
 
      QZipReader unzip ( gb.getPath() + FileName , QIODevice :: ReadOnly ) ;
@@ -57,8 +106,9 @@ qDocumento::qDocumento(QString FileName, QWidget *parent) :
      foreach ( QZipReader :: FileInfo fi , allFiles )
      {
      QString absPath = QDir::toNativeSeparators(baseDir.absolutePath() + "/" + fi.filePath) ;
-     qDebug() << "AbsPath: " + absPath;
-     qDebug() << "basename: " << QDir::toNativeSeparators(QFileInfo(absPath).absolutePath());
+
+     qDebug() << fi.isDir << fi.isFile << QDir::toNativeSeparators(QFileInfo(absPath).absolutePath());
+
      baseDir.mkpath(QDir::toNativeSeparators(QFileInfo(absPath).absolutePath()));
      if ( fi.isDir )
      {

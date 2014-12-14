@@ -12,6 +12,13 @@ QT       += core gui sql
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
+#contains( QT_CONFIG, system-zlib ) {
+#  if( unix|win32-g++* ): LIBS += -lz
+#  else: LIBS += zdll.lib
+#} else {
+#  INCLUDEPATH += $$PWD
+#}
+
 TARGET = saaj
 TEMPLATE = app
 
@@ -40,4 +47,5 @@ HEADERS  += widget.h \
     qzipreader_p.h \
     qzipwriter_p.h
 
-RESOURCES +=
+RESOURCES += \
+    recurso.qrc
