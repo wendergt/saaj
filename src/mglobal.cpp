@@ -103,9 +103,9 @@ mGlobal::mGlobal(QObject *parent) :
 #else
     apath.append("/AppData/Local/Saaj/");
 #endif
-    qDebug() << "No-Native-GetPath: " + apath;
+//    qDebug() << "No-Native-GetPath: " + apath;
     apath = QDir::toNativeSeparators(apath);
-    qDebug() << "   Native-GetPath: " + apath;
+//    qDebug() << "   Native-GetPath: " + apath;
     QDir dir;
     dir.setPath(apath);
     if (!dir.exists()){dir.mkdir(apath);}
@@ -130,6 +130,10 @@ mGlobal::mGlobal(QObject *parent) :
     settings->setValue("DB", apath);
     settings->setValue("TEMP", apath + "template/");
     settings->endGroup();
+
+
+    QSettings *myx = new QSettings(QDir::toNativeSeparators("C:/Users/GinaMarise/AppData/Local/Saaj/template/zcontent.xml"), XmlFormat);
+    qDebug() << myx->allKeys().count() << myx->allKeys();
 }
 
 mGlobal::~mGlobal()

@@ -4,70 +4,69 @@ void qDocumento::doPrint()
 {
     qDebug() << "TestWindow::doPrint()";
     mGlobal gb;
+
     QFile f(QDir::toNativeSeparators(gb.getPath() + "template/content.xml"));
-    //if (f.open(QFile::WriteOnly | QFile::Text);
+    if (f.open(QFile::WriteOnly | QFile::Text));
     qDebug() << f.size();
     QTextStream out(&f);
     out.setCodec("UTF-8");
-//    out << html;
-    //in.setString(&html,QIODevice::WriteOnly);
+    out << html;
     f.close();
-    QZipWriter zip(QDir::toNativeSeparators(QDir::home().path() + "/Documentos/DocumentoZIP.odt"));
-//    zip.addDirectory(QDir::toNativeSeparators(gb.getPath() + "template"));
-//    qDebug() << QString("%1").arg(JlCompress::compressDir("C:/Users/GinaMarise/Documents/Saaj/Documento.odt",
-//                                                          gb.getPath() + "template"));
-
-
-
-    //QZipWriter zip(path + "/dir.zip");
-
-    //if (zip.status() != QZipWriter::NoError)
-
+    QZipWriter zip(QDir::toNativeSeparators(QDir::home().path() + "/Documentos/AtaPronta.odt"));
     zip.setCompressionPolicy(QZipWriter::AutoCompress);
 
     QDirIterator it(QDir::toNativeSeparators(gb.getPath() + "template"), QDir::Files|QDir::Dirs, QDirIterator::Subdirectories);
 
-
-
+    qDebug() << "ZipFile: " + QDir::toNativeSeparators(QDir::home().path() + "/Documentos/AtaPronta.odt");
     while(it.hasNext())
     {
-    QString file_path = it.next();
-   // qDebug() << "isdir: " << it.fileInfo().isDir() << " isfile: " << it.fileInfo().isFile() <<
-   //             " - filapath do zip: " + file_path.remove(gb.getPath() + "template/");
+        qDebug() << QString("Size:%1 Tipo:%2%3 FilePath:%4").arg
+                    (QString::number(it.fileInfo().size()), QString::number(it.fileInfo().isDir()),
+                     QString::number(it.fileInfo().isFile()), it.filePath());
 
-    QString tmp = file_path.at(file_path.count()-1);
-    bool aux = QString::compare(tmp, ".", Qt::CaseInsensitive) && QString::compare(tmp, "..", Qt::CaseInsensitive);
-    qDebug() << "*********   tmp: " << tmp << " aux: " << aux;
+        QString file_path = QDir::toNativeSeparators(it.next());
+        //QString tmp = file_path.at(file_path.count()-1);
 
+        if (it.fileInfo().isDir() && it.fileName() != "." && it.fileName() != "..")
+                                  //QString::compare(tmp, ".", Qt::CaseInsensitive))
+        {
+            /*    qDebug() << "Folder";
+        qDebug() << "File_Path: " << file_path;
+        qDebug() << "SplitLast: " << file_path.split(QDir::toNativeSeparators("/")).last();
+        qDebug() << "GetPath  : " << QDir::toNativeSeparators(gb.getPath() + "template/");
+        qDebug() << "Remove   : " << file_path.remove(QDir::toNativeSeparators(gb.getPath() + "template/"));
+        qDebug() << " ";
+        enum Permission {
+            ReadOwner = 0x4000, WriteOwner = 0x2000, ExeOwner = 0x1000,
+            ReadUser  = 0x0400, WriteUser  = 0x0200, ExeUser  = 0x0100,
+            ReadGroup = 0x0040, WriteGroup = 0x0020, ExeGroup = 0x0010,
+            ReadOther = 0x0004, WriteOther = 0x0002, ExeOther = 0x0001*/
 
-    if (it.fileInfo().isDir() && aux)
-    {
-    zip.setCreationPermissions(QFile::permissions(file_path));
-    //int x = QString::compare(tmp, ".", Qt::CaseInsensitive);
-    zip.addDirectory(file_path.remove(gb.getPath() + "template"));
+            zip.setCreationPermissions(QFile::permissions(file_path));
+            zip.addDirectory(file_path.remove(QDir::toNativeSeparators(gb.getPath() + "template/")));
+        }
+
+        if(it.fileInfo().isFile())
+        {
+            QFile file(file_path);
+
+            if (!file.open(QIODevice::ReadOnly))
+                continue;
+            /*    qDebug() << "File";
+    qDebug() << "File_Path: " << file_path;
+    qDebug() << "SplitLast: " << file_path.split(QDir::toNativeSeparators("/")).last();
+    qDebug() << "GetPath  : " << QDir::toNativeSeparators(gb.getPath() + "template/");
+    qDebug() << "Remove   : " << file_path.remove(QDir::toNativeSeparators(gb.getPath() + "template/"));
+    qDebug() << " ";
+*/
+            zip.setCreationPermissions(QFile::permissions(file_path));
+            QByteArray ba = file.readAll();
+            zip.addFile(file_path.remove(QDir::toNativeSeparators(gb.getPath() + "template/")), ba);
+
+            file.close();
+        }
     }
-    //else
-    if(it.fileInfo().isFile())
-    {
-    QFile file(file_path);
-
-    if (!file.open(QIODevice::ReadOnly))
-    continue;
-
-    zip.setCreationPermissions(QFile::permissions(file_path));
-    QByteArray ba = file.readAll();
-    zip.addFile(file_path.remove(gb.getPath() + "template/"), ba);
-
-    file.close();
-    }
-    }
-
     zip.close();
-
-
-
-
-
 }
 
 void qDocumento::doPrintVis()
@@ -93,36 +92,43 @@ void qDocumento::PutData(QString ident, QString dados)
 qDocumento::qDocumento(QString FileName, QWidget *parent) :
     QDialog(parent)
 {
-    mGlobal gb;
+     mGlobal gb;
 
-    QDir baseDir (QDir::toNativeSeparators(gb.getPath() + "template/"));
-
-    qDebug() << "UnzipFile: " + gb.getPath() + FileName;
+     QDir baseDir (QDir::toNativeSeparators(gb.getPath() + "template/"));
+     //baseDir.mkpath(QDir::toNativeSeparators(QFileInfo(absPath).absolutePath()));
+     baseDir.mkpath(QDir::toNativeSeparators(baseDir.absolutePath()+"/Configurations2/progressbar"));
+     baseDir.mkpath(QDir::toNativeSeparators(baseDir.absolutePath()+"/Configurations2/popupmenu"));
+     baseDir.mkpath(QDir::toNativeSeparators(baseDir.absolutePath()+"/Configurations2/images/Bitmaps"));
+     baseDir.mkpath(QDir::toNativeSeparators(baseDir.absolutePath()+"/Configurations2/toolbar"));
+     baseDir.mkpath(QDir::toNativeSeparators(baseDir.absolutePath()+"/Configurations2/floater"));
+     baseDir.mkpath(QDir::toNativeSeparators(baseDir.absolutePath()+"/Configurations2/menubar"));
+     baseDir.mkpath(QDir::toNativeSeparators(baseDir.absolutePath()+"/Configurations2/toolpanel"));
+     baseDir.mkpath(QDir::toNativeSeparators(baseDir.absolutePath()+"/Configurations2/accelerator"));
+     baseDir.mkpath(QDir::toNativeSeparators(baseDir.absolutePath()+"/Configurations2/statusbar"));
+     baseDir.mkpath(QDir::toNativeSeparators(baseDir.absolutePath()+"/META-INF"));
+     baseDir.mkpath(QDir::toNativeSeparators(baseDir.absolutePath()+"/Pictures"));
+     baseDir.mkpath(QDir::toNativeSeparators(baseDir.absolutePath()+"/Thumbnails"));
 
      QZipReader unzip ( gb.getPath() + FileName , QIODevice :: ReadOnly ) ;
-     QList < QZipReader :: FileInfo > allFiles = unzip.fileInfoList ( ) ;
-     QZipReader :: FileInfo fi;
+     QList < QZipReader :: FileInfo > allFiles = unzip.fileInfoList() ;
+     //QZipReader :: FileInfo fi;
+
+     qDebug() << "UnzipFile: " + gb.getPath() + FileName;
+
+     foreach (QZipReader :: FileInfo var, allFiles) {
+         qDebug() << QString("Size:%1 Tipo:%2%3 FilePath:%4").arg
+                     (QString::number(var.size),
+                      QString::number(var.isDir),
+                      QString::number(var.isFile),
+                      var.filePath);
+     }
+
+
 
      foreach ( QZipReader :: FileInfo fi , allFiles )
      {
      QString absPath = QDir::toNativeSeparators(baseDir.absolutePath() + "/" + fi.filePath) ;
 
-     qDebug() << fi.isDir << fi.isFile << QDir::toNativeSeparators(QFileInfo(absPath).absolutePath());
-
-     baseDir.mkpath(QDir::toNativeSeparators(QFileInfo(absPath).absolutePath()));
-     if ( fi.isDir )
-     {
-     if ( ! baseDir.mkpath(QDir::toNativeSeparators(baseDir.absolutePath() + "/" + fi.filePath) ) )
-     return ;
-     if ( ! QFile :: setPermissions ( absPath , fi.permissions ) )
-     return ;
-     }
-     }
-
-     foreach ( QZipReader :: FileInfo fi , allFiles )
-     {
-     QString absPath = QDir::toNativeSeparators(baseDir.absolutePath() + "/" + fi. filePath );
-     //absPath = QDir::toNativeSeparators(absPath);
      if ( fi. isFile )
      {
      QFile file ( absPath ) ;
@@ -137,12 +143,6 @@ qDocumento::qDocumento(QString FileName, QWidget *parent) :
      }
      }
      unzip. close ( ) ;
-//    JlCompress::extractDir(gb.getPath() + FileName, gb.getPath() + "template");
-//    QZipReader zip(gb.getPath() + FileName);
-//    qDebug() << zip.exists();
-//    qDebug() << zip.status();
-//    qDebug() << gb.getPath() + FileName;
-//    zip.extractAll(gb.getPath() + "template");
 
     QFile f(QDir::toNativeSeparators(gb.getPath() + "template/content.xml"));
 
@@ -151,7 +151,7 @@ qDocumento::qDocumento(QString FileName, QWidget *parent) :
     //{
     QTextStream in(&f);
     in.setCodec("UTF-8");
-    qDebug() << f.size();
+    //qDebug() << f.size();
     html.append(in.readAll());
     //}
 
