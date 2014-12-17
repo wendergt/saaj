@@ -97,43 +97,66 @@ mGlobal::mGlobal(QObject *parent) :
     QObject(parent)
 {
     //****************************************** PATH *********************************************
-    apath = QDir::home().path();
+    QString BaseDir = QDir::home().path();
+    QString DocDir  = QDir::home().path();
+
 #ifdef Q_OS_LINUX
-    apath.append("/.saaj/");
+    BaseDir.append("/.saaj/");
+    DocDir. append("/.saaj/Documentos/Audiencias/");
 #else
-    apath.append("/AppData/Local/Saaj/");
+    BaseDir.append("/AppData/Local/Saaj/");
+    DocDir. append("/Documents/Audiencias/");
 #endif
-//    qDebug() << "No-Native-GetPath: " + apath;
-    apath = QDir::toNativeSeparators(apath);
-//    qDebug() << "   Native-GetPath: " + apath;
+
+    BaseDir = QDir::toNativeSeparators(BaseDir);
+    DocDir  = QDir::toNativeSeparators(DocDir);
+
     QDir dir;
-    dir.setPath(apath);
-    if (!dir.exists()){dir.mkdir(apath);}
+    dir.setPath(BaseDir);
+    if (!dir.exists()){dir.mkdir(BaseDir);}
+    dir.setPath(DocDir);
+    if (!dir.exists()){dir.mkdir(DocDir);}
 
-//************************************************ DATA *******************************************
-    adata = QDate::currentDate();
-
+    //************************************************ CONFIG *******************************************
 
     XmlFormat = QSettings::registerFormat("xml", readXmlFile, writeXmlFile);
-    settings = new QSettings(apath+"config.xml", XmlFormat);
 
-    settings->beginGroup("config");
-    settings->setValue("application", "SAAJ");
-    settings->setValue("organization", "NewRed Software Ltda");
-    settings->setValue("suport", "mailto://admin@newred.com");
-    settings->setValue("USER", "loged.user");
-    settings->endGroup();
+    QFile f(BaseDir+"config.xml");
 
-    settings->beginGroup("path");
-    settings->setValue("DATA", apath);
-    settings->setValue("DOC", apath + "Documentos/");
-    settings->setValue("DB", apath);
-    settings->setValue("TEMP", apath + "template/");
-    settings->endGroup();
+    if ( f.exists() )
+    {
+        settings = new QSettings(BaseDir+"config.xml", XmlFormat);
+    }
+    else
+    {
+        settings = new QSettings(BaseDir+"config.xml", XmlFormat);
 
+        settings->beginGroup("app");
+        settings->setValue("application", "SAAJ");
+        settings->setValue("organization", "NewRed Software Ltda");
+        settings->setValue("suport", "mailto://admin@newred.com");
+        settings->setValue("user", "loged.user");
+        settings->endGroup();
 
-    QSettings *myx = new QSettings(QDir::toNativeSeparators("C:/Users/GinaMarise/AppData/Local/Saaj/template/zcontent.xml"), XmlFormat);
-    qDebug() << myx->allKeys().count() << myx->allKeys();
+        settings->beginGroup("config");
+        settings->setValue("comarca","Comarca de Cacoal");
+        settings->setValue("vara","1ª Vara do Juizado Especial");
+        settings->setValue("email","email@tjro.jus.br");
+        settings->setValue("endereco","Av. Proto Velho, Cacoal");
+        settings->setValue("forum","Fórum Ministra Sandra Nascimento - TJRO (www.tjro.jus.br)");
+        settings->setValue("juizo","Juizado Especial Cível, Criminal e da Fazenda Pública");
+        settings->setValue("tipojuiz","Juíza de Direito");
+        settings->setValue("nomejuiz","Anita Magdelaine Perez Belem");
+        settings->setValue("telefone","(69) 3441-0835");
+        settings->endGroup();
+
+        settings->beginGroup("path");
+        settings->setValue("DATA", BaseDir);
+        settings->setValue("DOC", DocDir);
+        settings->setValue("DB", BaseDir + "saaj.sqlite");
+        settings->setValue("TEMP", BaseDir + "template/");
+        settings->endGroup();
+    }
 }
 
 mGlobal::~mGlobal()
@@ -141,13 +164,14 @@ mGlobal::~mGlobal()
 
 }
 
-QString mGlobal::getPath()
+QString mGlobal::getPath(QString path)
 {
-    //qDebug() << "Returned Settings: " << settings->value("path/DATA").toString();
-    return settings->value("path/DATA","").toString();
+    //qDebug() << "getPath: " << settings->value("path/"+path).toString();
+    return QDir::toNativeSeparators(settings->value("path/"+path,"").toString());
 }
 
-QString mGlobal::getData()
+QString mGlobal::getValue(QString key)
 {
-    return adata.toString(Qt::LocalDate);
+    qDebug() << "getVallue: " + key + "= " + settings->value(key,"").toString();
+    return settings->value(key,"").toString();
 }

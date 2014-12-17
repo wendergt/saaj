@@ -17,16 +17,17 @@ class qDocumento : public QDialog
 public:
     explicit qDocumento(QString FileName, QWidget *parent = 0);
 
-    QString html;
+    QString texto;
+    QString stilo;
     QTextBrowser *labb;
     QVBoxLayout *mainLay;
 
 signals:
 
 public slots:
-    void doPrint();
-    void doPrintVis();
-    void PutData(QString ident, QString dados);
+    void SaveODT();
+    void LoadODT(QString FileName);
+    void PutData(QString key, QString dados);
 
 };
 

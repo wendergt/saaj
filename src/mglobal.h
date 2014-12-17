@@ -15,16 +15,12 @@ public:
     explicit mGlobal(QObject *parent = 0);
     ~mGlobal();
 
-    QString getPath();
-    QString getData();
+    QString getPath(QString path = "DATA");
+    QString getValue(QString key = "");
 
 private:
     QSettings::Format XmlFormat;
     QSettings *settings;
-    QString apath;
-    QString atapath;
-    QDate adata;
-    QTime ahora;
 
 signals:
 

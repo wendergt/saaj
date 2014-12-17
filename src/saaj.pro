@@ -31,8 +31,8 @@ SOURCES += main.cpp\
     qparte.cpp \
     qfinddlg.cpp \
     qformedit.cpp \
-    qdocumento.cpp \
-    mglobal.cpp
+    mglobal.cpp \
+    qdocumento.cpp
 
 HEADERS  += widget.h \
     databasemanager.h \
@@ -47,5 +47,4 @@ HEADERS  += widget.h \
     qzipreader_p.h \
     qzipwriter_p.h
 
-RESOURCES += \
-    recurso.qrc
+RESOURCES +=

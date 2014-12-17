@@ -19,8 +19,8 @@
 
 QT_BEGIN_MOC_NAMESPACE
 struct qt_meta_stringdata_qDocumento_t {
-    QByteArrayData data[7];
-    char stringdata[52];
+    QByteArrayData data[8];
+    char stringdata[56];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
@@ -32,13 +32,14 @@ static const qt_meta_stringdata_qDocumento_t qt_meta_stringdata_qDocumento = {
 QT_MOC_LITERAL(0, 0, 10),
 QT_MOC_LITERAL(1, 11, 7),
 QT_MOC_LITERAL(2, 19, 0),
-QT_MOC_LITERAL(3, 20, 10),
-QT_MOC_LITERAL(4, 31, 7),
-QT_MOC_LITERAL(5, 39, 5),
-QT_MOC_LITERAL(6, 45, 5)
+QT_MOC_LITERAL(3, 20, 7),
+QT_MOC_LITERAL(4, 28, 8),
+QT_MOC_LITERAL(5, 37, 7),
+QT_MOC_LITERAL(6, 45, 3),
+QT_MOC_LITERAL(7, 49, 5)
     },
-    "qDocumento\0doPrint\0\0doPrintVis\0PutData\0"
-    "ident\0dados\0"
+    "qDocumento\0SaveODT\0\0LoadODT\0FileName\0"
+    "PutData\0key\0dados\0"
 };
 #undef QT_MOC_LITERAL
 
@@ -57,13 +58,13 @@ static const uint qt_meta_data_qDocumento[] = {
 
  // slots: name, argc, parameters, tag, flags
        1,    0,   29,    2, 0x0a,
-       3,    0,   30,    2, 0x0a,
-       4,    2,   31,    2, 0x0a,
+       3,    1,   30,    2, 0x0a,
+       5,    2,   33,    2, 0x0a,
 
  // slots: parameters
     QMetaType::Void,
-    QMetaType::Void,
-    QMetaType::Void, QMetaType::QString, QMetaType::QString,    5,    6,
+    QMetaType::Void, QMetaType::QString,    4,
+    QMetaType::Void, QMetaType::QString, QMetaType::QString,    6,    7,
 
        0        // eod
 };
@@ -73,8 +74,8 @@ void qDocumento::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, 
     if (_c == QMetaObject::InvokeMetaMethod) {
         qDocumento *_t = static_cast<qDocumento *>(_o);
         switch (_id) {
-        case 0: _t->doPrint(); break;
-        case 1: _t->doPrintVis(); break;
+        case 0: _t->SaveODT(); break;
+        case 1: _t->LoadODT((*reinterpret_cast< QString(*)>(_a[1]))); break;
         case 2: _t->PutData((*reinterpret_cast< QString(*)>(_a[1])),(*reinterpret_cast< QString(*)>(_a[2]))); break;
         default: ;
         }

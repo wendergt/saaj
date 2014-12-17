@@ -57,7 +57,7 @@ qParte::qParte(QSqlRecord reg, QWidget *parent) :
 
     bool tp; int z;
     z = areg->field("tipo_parte").value().toInt();
-            tp = !(z >= 50) and !(z <= 55) or !(z >= 150) and !(z <= 155);
+            tp = (!(z >= 50) && !(z <= 55)) || (!(z >= 150) && !(z <= 155));
 
     btM->setVisible(tp);
     btP->setFlat(true);

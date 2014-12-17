@@ -16,8 +16,8 @@ bool DatabaseManager::openDB()
     // Find QSLite driver
     db = QSqlDatabase::addDatabase("QSQLITE");
     mGlobal gb;
-    qDebug() << "Banco: " << gb.getPath() + "saaj.sqlite";
-    db.setDatabaseName(gb.getPath() + "saaj.sqlite");
+    qDebug() << "Banco: " << gb.getPath("DATA") + "saaj.sqlite";
+    db.setDatabaseName(gb.getPath("DATA") + "saaj.sqlite");
 
     // Open databasee
     return db.open();
